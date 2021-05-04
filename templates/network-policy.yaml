@@ -1,0 +1,30 @@
+{{- range .Values.whitelists }}
+apiVersion: crd.projectcalico.org/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ printf "%s-%s-%s" $.Release.Name $.Chart.Name .name | trunc 63 | trimSuffix "-" }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  types:
+  - Ingress
+  - Egress
+  selector: "{{ range $i, $label := .destination.labelSelectors -}} 
+  {{ if $i }} || {{ end }}{{ $label.name }} == '{{ $label.value }}'
+  {{- end }}"
+  ingress:
+  {{- range .sources }}
+  - action: Allow
+    source:
+      {{- if .labelSelectors }}
+      selector: "{{ range $i, $label := .labelSelectors -}} 
+      {{ if $i }} || {{ end }}{{ $label.name }} == '{{ $label.value }}'
+      {{- end }}"
+      {{- end }}
+      {{- if .ips }}
+      nets: {{- .ips | toYaml | nindent 6}}
+      {{- end }}
+  {{- end }}
+  egress:
+  - action: Allow
+---
+{{- end }}

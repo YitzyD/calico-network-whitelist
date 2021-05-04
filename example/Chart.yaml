@@ -1,0 +1,11 @@
+apiVersion: v2
+name: example-whitelisted-server
+description: An example hello world chart using the calido network whitelist
+type: application
+version: 0.1.0
+appVersion: "1.16.0"
+dependencies:
+- name: calico-network-whitelist
+  version: 0.1.0
+  repository: "file://../"
+

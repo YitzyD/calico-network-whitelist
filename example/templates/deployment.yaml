@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "example.fullname" . }}
+  labels:
+    {{- include "example.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hello-world-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hello-world-server
+        {{ .Values.serverWhitelistLabel.name }}: {{ .Values.serverWhitelistLabel.destinationTag }}
+    spec:
+      containers:
+        - name: hello-world
+          image: k8s.gcr.io/echoserver:1.4
+          ports:
+          - name: http
+            containerPort: 8080
+            protocol: TCP

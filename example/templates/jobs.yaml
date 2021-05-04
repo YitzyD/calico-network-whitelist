@@ -1,0 +1,64 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ printf "%s-%s" .Release.Name "example-whitelisted-client" | trunc 63 | trimSuffix "-" }}
+  labels:
+    {{- include "example.labels" . | nindent 4 }}
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: whitelisted-client
+        {{ .Values.serverWhitelistLabel.name }}: {{ .Values.serverWhitelistLabel.sourceTag }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: client
+        readinessProbe:
+        image: curlimages/curl:7.76.1
+        env:
+        - name: SERVER
+          value: "http://{{ include "example.fullname" . }}:8080"
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Attempting to connect to: $SERVER"
+          if curl $SERVER --silent --fail -o /dev/null; then 
+            echo Connected Successfully;
+          else 
+            echo "Could Not Connect";
+          fi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ printf "%s-%s" .Release.Name "example-blocked-client" | trunc 63 | trimSuffix "-" }}
+  labels:
+    {{- include "example.labels" . | nindent 4 }}
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: blocked-client
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: client
+        readinessProbe:
+        image: curlimages/curl:7.76.1
+        env:
+        - name: SERVER
+          value: "http://{{ include "example.fullname" . }}:8080"
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Attempting to connect to: $SERVER"
+          if curl $SERVER --silent --fail --connect-timeout 30 -o /dev/null; then 
+            echo Connected Successfully;
+          else 
+            echo "Could Not Connect";
+          fi

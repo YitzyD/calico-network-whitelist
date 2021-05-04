@@ -1,0 +1,25 @@
+# whitelists is a list of whitelists to create
+whitelists: []
+#   Unique name of the whitelist
+# - name: server
+#   destination defines the target to place behind the whitelist.
+#   destination:
+#       A list of labelSelectors of the target endpoints. LabelSelectors are ORed, ie. targets with any of the labels will be placed behind the whitelist.
+#       labelSelectors:
+#       - name: server-label
+#         value: server-tag
+#     A list of sources to accept traffic from
+#     sources:
+#     A list of labelSelectors of clients to whitelist. LabelSelectors are ORed, ie. clients with any of the labels will be placed behind the whitelist.       
+#     - labelSelectors:
+#       - name: client-label
+#         value: client-tag
+#     A list of IPs to whitelist
+#     - ips:
+#       - 1.2.3.4
+#     LabelSelectors and ips can be used in tandem. They will be ANDed, ie. a client with any of the labels AND sending packets from the any of the IPs will be whitelisted  
+#     - labelSelectors:
+#       - name: client-label-and-specific-ip
+#         value: client-tag
+#       ips:
+#       - 5.6.7.8

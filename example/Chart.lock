@@ -1,0 +1,6 @@
+dependencies:
+- name: calico-network-whitelist
+  repository: file://../
+  version: 0.1.0
+digest: sha256:6b32c606b9aba5c381bc7875e9ac0e1bce6497c082a00a82b838792b4d34ab35
+generated: "2021-04-27T11:49:20.334295784-04:00"

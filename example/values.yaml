@@ -1,0 +1,16 @@
+serverWhitelistLabel:
+  name: &server-label-name hello-world-server
+  sourceTag: &server-label-source-tag client
+  destinationTag: &server-label-destination-tag server
+
+calico-network-whitelist:
+  whitelists:
+  - name: *server-label-name
+    destination:
+      labelSelectors:
+      - name: *server-label-name
+        value: *server-label-destination-tag
+    sources:
+    - labelSelectors:
+      - name: *server-label-name
+        value: *server-label-source-tag

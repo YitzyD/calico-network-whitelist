@@ -1,0 +1,34 @@
+An example server and two clients have been deployed:
+* Hello World Server: {{ include "example.fullname" . }}
+* Blocked Client: {{ printf "%s-%s" .Release.Name "example-blocked-client" | trunc 63 | trimSuffix "-" }}
+* Whitelisted Client: {{ printf "%s-%s" .Release.Name "example-whitelisted-client" | trunc 63 | trimSuffix "-" }}
+
+The Hello World Server is behind a whitelist controlled by the calico NetworkPolicy: {{ printf "%s-%s-%s" .Release.Name .Chart.Name .Values.serverWhitelistLabel.name | trunc 63 | trimSuffix "-" }}
+
+The Whitelisted Client pod is labeled "{{ .Values.serverWhitelistLabel.name }}: {{ .Values.serverWhitelistLabel.sourceTag }}", the label selector that is whitelisted by the Network Policy for the Hello World Server.
+
+The clients will attempt to connect to the Hello World Server when they start.
+To view the logs of each clients:
+* Blocked Client: "kubectl logs -l app.kubernetes.io/name=blocked-client"
+* Whitelisted Client: "kubectl logs -l app.kubernetes.io/name=whitelisted-client"
+
+Try connecting to the Hello World Server from your system, and you will also be blocked:
+curl -v $(kubectl get service {{ include "example.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'):8080
+
+Now add your IP as a whitelist source in the values.yaml file as such:
+
+calico-network-whitelist:
+  whitelists:
+  - destination:
+      name: *server-label-name
+      labelSelectors:
+      - name: *server-label-name
+        value: *server-label-destination-tag
+    sources:
+    - labelSelectors:
+      - name: *server-label-name
+        value: *server-label-source-tag
+    - ips:
+      - <Your-IP-Address>
+
+ Then upgrade the release. You can now connect to the Hello World Server from your system.
