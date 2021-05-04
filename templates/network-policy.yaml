@@ -2,14 +2,14 @@
 apiVersion: crd.projectcalico.org/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ printf "%s-%s-%s" $.Release.Name $.Chart.Name .name | trunc 63 | trimSuffix "-" }}
+  name: {{ printf "%s-%s-%s" $.Release.Name $.Chart.Name (tpl .name $) | trunc 63 | trimSuffix "-" }}
   namespace: {{ $.Release.Namespace }}
 spec:
   types:
   - Ingress
   - Egress
   selector: "{{ range $i, $label := .destination.labelSelectors -}} 
-  {{ if $i }} || {{ end }}{{ $label.name }} == '{{ $label.value }}'
+  {{ if $i }} || {{ end }}{{ if $label.value }}{{ tpl $label.name $ }} == '{{ tpl $label.value $ }}'{{ else }}{{ printf "has(%s)" (tpl $label.name $) }}{{ end }}
   {{- end }}"
   ingress:
   {{- range .sources }}
@@ -17,11 +17,11 @@ spec:
     source:
       {{- if .labelSelectors }}
       selector: "{{ range $i, $label := .labelSelectors -}} 
-      {{ if $i }} || {{ end }}{{ $label.name }} == '{{ $label.value }}'
+      {{ if $i }} || {{ end }}{{ if $label.value }}{{ tpl $label.name $ }} == '{{ tpl $label.value $ }}'{{ else }}{{ printf "has(%s)" (tpl $label.name $) }}{{ end }}
       {{- end }}"
       {{- end }}
       {{- if .ips }}
-      nets: {{- .ips | toYaml | nindent 6}}
+      nets: {{- .ips | toYaml | nindent 6 }}
       {{- end }}
   {{- end }}
   egress:
