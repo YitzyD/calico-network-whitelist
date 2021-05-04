@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  calico-network-whitelist:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-05-04T09:09:45.790350803-04:00"
+    description: Whitelist resources using calico
+    digest: 1360f3cef62448aa39bb3ac6ba4c0ea361b3fba2d9c3feef2562816301296bb7
+    name: calico-network-whitelist
+    type: application
+    urls:
+    - https://github.com/YitzyD/calico-network-whitelist/calico-network-whitelist-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-05-04T09:09:45.789352437-04:00"
