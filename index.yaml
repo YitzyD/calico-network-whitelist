@@ -9,6 +9,6 @@ entries:
     name: calico-network-whitelist
     type: application
     urls:
-    - https://github.com/YitzyD/calico-network-whitelist/calico-network-whitelist-0.1.0.tgz
+    - https://yitzyd.github.io/calico-network-whitelist/calico-network-whitelist-0.1.0.tgz
     version: 0.1.0
 generated: "2021-05-04T09:09:45.789352437-04:00"
